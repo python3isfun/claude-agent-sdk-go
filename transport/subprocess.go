@@ -44,6 +44,7 @@ func NewSubprocessTransport(cliPath string, opts ...Option) *SubprocessTransport
 		args: []string{
 			"--input-format", "stream-json",
 			"--output-format", "stream-json",
+			"--verbose",
 		},
 	}
 
@@ -105,7 +106,7 @@ func (t *SubprocessTransport) Start(ctx context.Context) error {
 
 	// Start reader goroutines with coordination
 	var wg sync.WaitGroup
-	wg.Add(2) // readOutput and readErrors
+	wg.Add(3) // readOutput, readErrors, and waitForExit
 
 	go func() {
 		t.readOutput()
@@ -117,7 +118,12 @@ func (t *SubprocessTransport) Start(ctx context.Context) error {
 		wg.Done()
 	}()
 
-	// Coordinator goroutine: waits for readers, then closes errorCh
+	go func() {
+		t.waitForExit()
+		wg.Done()
+	}()
+
+	// Coordinator goroutine: waits for all goroutines, then closes errorCh
 	go func() {
 		wg.Wait()
 		t.closeOnce.Do(func() {
@@ -125,8 +131,6 @@ func (t *SubprocessTransport) Start(ctx context.Context) error {
 		})
 		close(t.readersDone)
 	}()
-
-	go t.waitForExit()
 
 	return nil
 }
