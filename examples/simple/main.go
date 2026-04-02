@@ -6,8 +6,8 @@ import (
 	"fmt"
 	"log"
 
-	claude "github.com/dayonghuang/claude-agent-sdk-go"
-	"github.com/dayonghuang/claude-agent-sdk-go/message"
+	claude "github.com/python3isfun/claude-agent-sdk-go"
+	"github.com/python3isfun/claude-agent-sdk-go/message"
 )
 
 func main() {

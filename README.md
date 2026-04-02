@@ -5,7 +5,7 @@ A Go SDK for the Claude Agent, enabling programmatic interaction with Claude Cod
 ## Installation
 
 ```bash
-go get github.com/dayonghuang/claude-agent-sdk-go
+go get github.com/python3isfun/claude-agent-sdk-go
 ```
 
 ## Prerequisites
@@ -25,8 +25,8 @@ import (
     "fmt"
     "log"
 
-    claude "github.com/dayonghuang/claude-agent-sdk-go"
-    "github.com/dayonghuang/claude-agent-sdk-go/message"
+    claude "github.com/python3isfun/claude-agent-sdk-go"
+    "github.com/python3isfun/claude-agent-sdk-go/message"
 )
 
 func main() {
@@ -108,7 +108,7 @@ claude.Query(ctx, prompt, claude.WithPreToolUseHook("Bash", bashGuard))
 ## Package Structure
 
 ```
-github.com/dayonghuang/claude-agent-sdk-go/
+github.com/python3isfun/claude-agent-sdk-go/
 ├── agent.go              # Query() entry point
 ├── client.go             # Interactive client
 ├── options.go            # Configuration options

@@ -6,9 +6,9 @@ import (
 	"fmt"
 	"sync"
 
-	"github.com/dayonghuang/claude-agent-sdk-go/internal/cli"
-	"github.com/dayonghuang/claude-agent-sdk-go/message"
-	"github.com/dayonghuang/claude-agent-sdk-go/transport"
+	"github.com/python3isfun/claude-agent-sdk-go/internal/cli"
+	"github.com/python3isfun/claude-agent-sdk-go/message"
+	"github.com/python3isfun/claude-agent-sdk-go/transport"
 )
 
 // Query sends a prompt to Claude and returns streaming messages.

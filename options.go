@@ -3,9 +3,9 @@ package claude
 import (
 	"time"
 
-	"github.com/dayonghuang/claude-agent-sdk-go/hooks"
-	"github.com/dayonghuang/claude-agent-sdk-go/mcp"
-	"github.com/dayonghuang/claude-agent-sdk-go/permission"
+	"github.com/python3isfun/claude-agent-sdk-go/hooks"
+	"github.com/python3isfun/claude-agent-sdk-go/mcp"
+	"github.com/python3isfun/claude-agent-sdk-go/permission"
 )
 
 // ClaudeAgentOptions configures the Claude agent.

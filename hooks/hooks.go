@@ -5,7 +5,7 @@ import (
 	"context"
 	"time"
 
-	"github.com/dayonghuang/claude-agent-sdk-go/permission"
+	"github.com/python3isfun/claude-agent-sdk-go/permission"
 )
 
 // Event identifies the type of hook event.
