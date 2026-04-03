@@ -135,7 +135,7 @@ func (c *Client) readMessages(ctx context.Context) {
 	}
 }
 
-// SendMessage sends a message to Claude.
+// SendMessage sends a text message to Claude.
 func (c *Client) SendMessage(ctx context.Context, prompt string) error {
 	// Check if we need to start, with proper synchronization
 	c.mu.Lock()
@@ -160,6 +160,58 @@ func (c *Client) SendMessage(ctx context.Context, prompt string) error {
 			"content": []map[string]interface{}{
 				{"type": "text", "text": prompt},
 			},
+		},
+	}
+
+	msgBytes, err := json.Marshal(userMsg)
+	if err != nil {
+		return fmt.Errorf("failed to marshal message: %w", err)
+	}
+
+	return c.transport.Send(ctx, msgBytes)
+}
+
+// ContentBlock represents a content block in a multimodal message.
+// For text: {"type": "text", "text": "..."}
+// For image: {"type": "image", "source": {"type": "base64", "media_type": "image/jpeg", "data": "..."}}
+type ContentBlock = map[string]interface{}
+
+// SendMessageWithContent sends a multimodal message to Claude with multiple content blocks.
+// This supports text and images in the same message.
+//
+// Example usage:
+//
+//	content := []ContentBlock{
+//	    {"type": "text", "text": "What's in this image?"},
+//	    {"type": "image", "source": map[string]interface{}{
+//	        "type": "base64",
+//	        "media_type": "image/jpeg",
+//	        "data": base64EncodedImage,
+//	    }},
+//	}
+//	client.SendMessageWithContent(ctx, content)
+func (c *Client) SendMessageWithContent(ctx context.Context, content []ContentBlock) error {
+	// Check if we need to start, with proper synchronization
+	c.mu.Lock()
+	needsStart := !c.started
+	closed := c.closed
+	c.mu.Unlock()
+
+	if closed {
+		return ErrClosed
+	}
+
+	if needsStart {
+		if err := c.Start(ctx); err != nil {
+			return err
+		}
+	}
+
+	userMsg := map[string]interface{}{
+		"type": "user",
+		"message": map[string]interface{}{
+			"role":    "user",
+			"content": content,
 		},
 	}
 
