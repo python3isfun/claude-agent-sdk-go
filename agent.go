@@ -152,11 +152,18 @@ func runQuery(ctx context.Context, prompt string, msgChan chan<- message.Message
 func buildCLIArgs(cfg *ClaudeAgentOptions) []string {
 	var args []string
 
-	// System prompt
+	// System prompt (replaces default)
 	if cfg.SystemPrompt != "" {
 		args = append(args, "--system-prompt", cfg.SystemPrompt)
 	} else if cfg.SystemPromptFile != "" {
 		args = append(args, "--system-prompt-file", cfg.SystemPromptFile)
+	}
+
+	// Append system prompt (preserves default, adds custom instructions)
+	if cfg.AppendSystemPrompt != "" {
+		args = append(args, "--append-system-prompt", cfg.AppendSystemPrompt)
+	} else if cfg.AppendSystemPromptFile != "" {
+		args = append(args, "--append-system-prompt-file", cfg.AppendSystemPromptFile)
 	}
 
 	// Max turns
@@ -246,6 +253,9 @@ func (a *Agent) Query(ctx context.Context, prompt string, opts ...Option) (<-cha
 	// Start with agent's base options converted to Options
 	if a.options.SystemPrompt != "" {
 		mergedOpts = append(mergedOpts, WithSystemPrompt(a.options.SystemPrompt))
+	}
+	if a.options.AppendSystemPrompt != "" {
+		mergedOpts = append(mergedOpts, WithAppendSystemPrompt(a.options.AppendSystemPrompt))
 	}
 	if a.options.WorkingDir != "" {
 		mergedOpts = append(mergedOpts, WithWorkingDir(a.options.WorkingDir))

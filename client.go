@@ -304,12 +304,18 @@ func (c *Client) Fork(ctx context.Context) (*Client, error) {
 	}
 
 	// Create new client with resume option
-	newClient, err := NewClient(
+	opts := []Option{
 		WithResume(sessionID),
-		WithSystemPrompt(c.options.SystemPrompt),
 		WithWorkingDir(c.options.WorkingDir),
 		WithCLIPath(c.options.CLIPath),
-	)
+	}
+	if c.options.SystemPrompt != "" {
+		opts = append(opts, WithSystemPrompt(c.options.SystemPrompt))
+	}
+	if c.options.AppendSystemPrompt != "" {
+		opts = append(opts, WithAppendSystemPrompt(c.options.AppendSystemPrompt))
+	}
+	newClient, err := NewClient(opts...)
 	if err != nil {
 		return nil, err
 	}

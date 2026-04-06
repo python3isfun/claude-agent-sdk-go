@@ -10,11 +10,17 @@ import (
 
 // ClaudeAgentOptions configures the Claude agent.
 type ClaudeAgentOptions struct {
-	// SystemPrompt sets the system instruction for Claude.
+	// SystemPrompt sets the system instruction for Claude (replaces default).
 	SystemPrompt string
 
-	// SystemPromptFile path to a file containing the system prompt.
+	// SystemPromptFile path to a file containing the system prompt (replaces default).
 	SystemPromptFile string
+
+	// AppendSystemPrompt appends to the default system prompt (preserves Claude Code capabilities).
+	AppendSystemPrompt string
+
+	// AppendSystemPromptFile path to a file to append to the default system prompt.
+	AppendSystemPromptFile string
 
 	// MaxTurns limits the number of conversation turns.
 	MaxTurns int
@@ -102,6 +108,21 @@ func WithSystemPrompt(prompt string) Option {
 func WithSystemPromptFile(path string) Option {
 	return func(o *ClaudeAgentOptions) {
 		o.SystemPromptFile = path
+	}
+}
+
+// WithAppendSystemPrompt appends to the default system prompt.
+// This preserves Claude Code's built-in capabilities while adding custom instructions.
+func WithAppendSystemPrompt(prompt string) Option {
+	return func(o *ClaudeAgentOptions) {
+		o.AppendSystemPrompt = prompt
+	}
+}
+
+// WithAppendSystemPromptFile appends file contents to the default system prompt.
+func WithAppendSystemPromptFile(path string) Option {
+	return func(o *ClaudeAgentOptions) {
+		o.AppendSystemPromptFile = path
 	}
 }
 
