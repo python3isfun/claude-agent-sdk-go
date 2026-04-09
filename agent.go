@@ -233,6 +233,11 @@ func buildCLIArgs(cfg *ClaudeAgentOptions) []string {
 		args = append(args, "--no-session-persistence")
 	}
 
+	// JSON Schema for structured output validation
+	if cfg.JsonSchema != "" {
+		args = append(args, "--json-schema", cfg.JsonSchema)
+	}
+
 	return args
 }
 

@@ -91,6 +91,10 @@ type ClaudeAgentOptions struct {
 
 	// NoSessionPersistence disables session persistence to disk.
 	NoSessionPersistence bool
+
+	// JsonSchema sets a JSON Schema for structured output validation.
+	// The CLI will constrain model output to match this schema.
+	JsonSchema string
 }
 
 // AgentConfig defines a subagent configuration.
@@ -316,6 +320,15 @@ func WithBare(enabled bool) Option {
 func WithNoSessionPersistence(enabled bool) Option {
 	return func(o *ClaudeAgentOptions) {
 		o.NoSessionPersistence = enabled
+	}
+}
+
+// WithJsonSchema sets a JSON Schema for structured output validation.
+// The CLI constrains model output to match this schema, improving consistency
+// and reducing output verbosity.
+func WithJsonSchema(schema string) Option {
+	return func(o *ClaudeAgentOptions) {
+		o.JsonSchema = schema
 	}
 }
 
