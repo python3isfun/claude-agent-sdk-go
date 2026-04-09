@@ -84,6 +84,13 @@ type ClaudeAgentOptions struct {
 
 	// ExtraArgs provides additional CLI arguments.
 	ExtraArgs map[string]interface{}
+
+	// Bare enables minimal mode: skips hooks, LSP, plugins, CLAUDE.md, auto-memory, etc.
+	// Reduces subprocess startup latency.
+	Bare bool
+
+	// NoSessionPersistence disables session persistence to disk.
+	NoSessionPersistence bool
 }
 
 // AgentConfig defines a subagent configuration.
@@ -295,6 +302,20 @@ func WithPostToolUseHook(pattern string, handler hooks.Handler) Option {
 			Pattern:  pattern,
 			Handlers: []hooks.Handler{handler},
 		})
+	}
+}
+
+// WithBare enables bare/minimal mode (skips hooks, LSP, plugins, etc.).
+func WithBare(enabled bool) Option {
+	return func(o *ClaudeAgentOptions) {
+		o.Bare = enabled
+	}
+}
+
+// WithNoSessionPersistence disables session persistence to disk.
+func WithNoSessionPersistence(enabled bool) Option {
+	return func(o *ClaudeAgentOptions) {
+		o.NoSessionPersistence = enabled
 	}
 }
 

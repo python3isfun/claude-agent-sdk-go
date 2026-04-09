@@ -74,6 +74,11 @@ func runQuery(ctx context.Context, prompt string, msgChan chan<- message.Message
 		transportOpts = append(transportOpts, transport.WithWorkingDir(cfg.WorkingDir))
 	}
 
+	// Validate CLI arguments before building command
+	if err := validateCLIArgs(cfg); err != nil {
+		return fmt.Errorf("option validation failed: %w", err)
+	}
+
 	// Build CLI arguments
 	args := buildCLIArgs(cfg)
 	transportOpts = append(transportOpts, transport.WithArgs(args...))
@@ -217,6 +222,17 @@ func buildCLIArgs(cfg *ClaudeAgentOptions) []string {
 		args = append(args, "--resume", cfg.Resume)
 	}
 
+	// Bare mode: skip hooks, LSP, plugins, CLAUDE.md, auto-memory, etc.
+	// Reduces subprocess startup latency significantly
+	if cfg.Bare {
+		args = append(args, "--bare")
+	}
+
+	// No session persistence: skip disk I/O for session saves
+	if cfg.NoSessionPersistence {
+		args = append(args, "--no-session-persistence")
+	}
+
 	return args
 }
 
@@ -232,6 +248,11 @@ type Agent struct {
 func NewAgent(opts ...Option) (*Agent, error) {
 	cfg := DefaultOptions()
 	applyOptions(cfg, opts...)
+
+	// Validate options
+	if err := validateCLIArgs(cfg); err != nil {
+		return nil, fmt.Errorf("option validation failed: %w", err)
+	}
 
 	// Find CLI
 	cliPath, err := cli.FindCLI(cfg.CLIPath)
